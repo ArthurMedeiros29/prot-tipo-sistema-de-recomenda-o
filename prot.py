@@ -46,58 +46,57 @@ matriz_interecao = np.array([
 ])
 
 # Função para recomendação por Filtragem Colaborativa
-def recomendacao_fc(user_id, matriz_interecao, top_n=2):
+def recomendacao_fc(user_id, matriz_interecao, top_recomendacoes=2):
     user_similares = cosine_similarity(matriz_interecao)
-
+    
     user_pontuacao_similaridade = user_similares[user_id - 1]
-
+    
     pontuacao_ponderada = np.dot(user_pontuacao_similaridade, matriz_interecao)
-
+   
     user_interacao = matriz_interecao[user_id - 1]
-
+   
     pontuacao_ponderada = pontuacao_ponderada * (user_interacao == 0)
-
-    videos_recomendados = np.argsort(pontuacao_ponderada)[::-1][:top_n] + 1
+  
+    videos_recomendados = np.argsort(pontuacao_ponderada)[::-1][:top_recomendacoes] + 1
    
     return videos_recomendados
 
 # Função para recomendação por Filtragem Baseada em Conteúdo
-def recomendacao_fbc(user_id, users, videos, top_n=2):
+def recomendacao_fbc(user_id, users, videos, top_recomendacoes=2):
     user_atributos = np.array(list(users[user_id].values())).reshape(1, -1)
    
     video_atributos = np.array([list(videos[vid].values()) for vid in videos])
-   
+
     video_similarities = cosine_similarity(user_atributos, video_atributos).flatten()
    
-    videos_recomendados = np.argsort(video_similarities)[::-1][:top_n] + 1
+    videos_recomendados = np.argsort(video_similarities)[::-1][:top_recomendacoes] + 1
   
     return videos_recomendados
 
 # Função para recomendação híbrida, que combina Filtragem Colaborativa e Filtragem Baseada em Conteúdo
-def recomendacao_hibrida(user_id, matriz_interecao, users, videos, alpha=0.5, top_n=2):
-    fc_recomendacao = recomendacao_fc(user_id, matriz_interecao, top_n=top_n)
+def recomendacao_hibrida(user_id, matriz_interecao, users, videos, peso_fc=0.5, top_recomendacoes=2):
+    fc_recomendacao = recomendacao_fc(user_id, matriz_interecao, top_recomendacoes=top_recomendacoes)
   
-    fbc_recomendacao = recomendacao_fbc(user_id, users, videos, top_n=top_n)
+    fbc_recomendacao = recomendacao_fbc(user_id, users, videos, top_recomendacoes=top_recomendacoes)
  
     pontuacoes_finais = {}
     
     for vid in fc_recomendacao:
-        pontuacoes_finais[vid] = alpha
+        pontuacoes_finais[vid] = peso_fc
     
     for vid in fbc_recomendacao:
         if vid in pontuacoes_finais:
-            pontuacoes_finais[vid] += (1 - alpha)
+            pontuacoes_finais[vid] += (1 - peso_fc)
         else:
-            pontuacoes_finais[vid] = (1 - alpha)
+            pontuacoes_finais[vid] = (1 - peso_fc)
     
-    recomendacao_final = sorted(pontuacoes_finais, key=pontuacoes_finais.get, reverse=True)[:top_n]
+    recomendacao_final = sorted(pontuacoes_finais, key=pontuacoes_finais.get, reverse=True)[:top_recomendacoes]
     
     return recomendacao_final
 
 # Gera as recomendações para cada usuário
 for user_id in users.keys():
-    recommendations = recomendacao_hibrida(user_id, matriz_interecao, users, videos, top_n=3)
+    recommendations = recomendacao_hibrida(user_id, matriz_interecao, users, videos, top_recomendacoes=3)
     
     recommendations = list(map(int, recommendations))
-    
     print(f"Recomendações para o usuário {user_id}: {recommendations}")
