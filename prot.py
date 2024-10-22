@@ -66,7 +66,7 @@ def recomendacao_fbc(user_id, users, videos, top_recomendacoes=2):
     user_atributos = np.array(list(users[user_id].values())).reshape(1, -1)
    
     video_atributos = np.array([list(videos[vid].values()) for vid in videos])
-
+        
     video_similarities = cosine_similarity(user_atributos, video_atributos).flatten()
    
     videos_recomendados = np.argsort(video_similarities)[::-1][:top_recomendacoes] + 1
@@ -96,7 +96,7 @@ def recomendacao_hibrida(user_id, matriz_interecao, users, videos, peso_fc=0.5, 
 
 # Gera as recomendações para cada usuário
 for user_id in users.keys():
-    recommendations = recomendacao_hibrida(user_id, matriz_interecao, users, videos, top_recomendacoes=3)
+    recomendacoes = recomendacao_hibrida(user_id, matriz_interecao, users, videos, top_recomendacoes=3)
     
-    recommendations = list(map(int, recommendations))
-    print(f"Recomendações para o usuário {user_id}: {recommendations}")
+    recomendacoes = list(map(int, recomendacoes))
+    print(f"Recomendações para o usuário {user_id}: Vídeo(s) {' - '.join(map(str, recomendacoes))}")
