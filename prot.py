@@ -48,7 +48,7 @@ matriz_interecao = np.array([
 # Função para recomendação por Filtragem Colaborativa
 def recomendacao_fc(user_id, matriz_interecao, top_recomendacoes=2):
     user_similares = cosine_similarity(matriz_interecao)
-    
+
     user_pontuacao_similaridade = user_similares[user_id - 1]
     
     pontuacao_ponderada = np.dot(user_pontuacao_similaridade, matriz_interecao)
@@ -66,7 +66,7 @@ def recomendacao_fbc(user_id, users, videos, top_recomendacoes=2):
     user_atributos = np.array(list(users[user_id].values())).reshape(1, -1)
    
     video_atributos = np.array([list(videos[vid].values()) for vid in videos])
-        
+
     video_similarities = cosine_similarity(user_atributos, video_atributos).flatten()
    
     videos_recomendados = np.argsort(video_similarities)[::-1][:top_recomendacoes] + 1
@@ -97,6 +97,7 @@ def recomendacao_hibrida(user_id, matriz_interecao, users, videos, peso_fc=0.5, 
 # Gera as recomendações para cada usuário
 for user_id in users.keys():
     recomendacoes = recomendacao_hibrida(user_id, matriz_interecao, users, videos, top_recomendacoes=3)
-    
+
     recomendacoes = list(map(int, recomendacoes))
     print(f"Recomendações para o usuário {user_id}: Vídeo(s) {' - '.join(map(str, recomendacoes))}")
+
