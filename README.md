@@ -1,3 +1,3 @@
 # Protótipo de Sistema de Recomendação
 
-Projeto idealizado para TCC, visando entender como os Sistemas de Recomendação funcionam na prática, utilizando a plataforma do YouTube como base.
+Este projeto foi desenvolvido como parte do Trabalho de Conclusão de Curso (TCC) e tem como objetivo explorar o funcionamento prático dos Sistemas de Recomendação, com foco na plataforma do YouTube. Através deste estudo, busca-se compreender como os algoritmos de recomendação influenciam o consumo de conteúdo e as interações dos usuários.
